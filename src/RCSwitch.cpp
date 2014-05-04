@@ -1,6 +1,6 @@
 /*
   RCSwitch - Arduino libary for remote control outlet switches
-  Copyright (c) 2011 Suat Özgür.  All right reserved.
+  Copyright (c) 2011 Suat ï¿½zgï¿½r.  All right reserved.
   
   Contributors:
   - Andre Koehler / info(at)tomate-online(dot)de
@@ -104,11 +104,12 @@ void RCSwitch::setReceiveTolerance(int nPercent) {
  *
  * @param nTransmitterPin    Arduino Pin to which the sender is connected to
  */
+#if not defined( RCSwitchDisableReceiving )
 void RCSwitch::enableTransmit(int nTransmitterPin) {
   this->nTransmitterPin = nTransmitterPin;
   pinMode(this->nTransmitterPin, OUTPUT);
 }
-
+#endif
 /**
   * Disable transmissions
   */

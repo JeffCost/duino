@@ -10,7 +10,6 @@ char cmd[3];
 char pin[3];
 char val[13];
 char aux[4];
-char aux2[4];
 
 Servo servo;
 
@@ -44,15 +43,8 @@ void process() {
   int cmdid = atoi(cmd);
 
   if (cmdid == 96) {
-    //96110FFFFFFF10101195
     strncpy(val, messageBuffer + 4, 12);
     val[12] = '\0';
-    strncpy(aux, messageBuffer + 16, 1);
-    aux[3] = '\0';
-    
-    strncpy(aux2, messageBuffer + 17, 3);
-    aux2[3] = '\0';
-
   } else if (cmdid > 90) {
     strncpy(val, messageBuffer + 4, 2);
     val[2] = '\0';
@@ -65,16 +57,10 @@ void process() {
     aux[4] = '\0';
   }
 
-  // Serial.print("Command ");
   // Serial.println(cmd);
-  // Serial.print("Pin ");
   // Serial.println(pin);
-  // Serial.print("Val ");
   // Serial.println(val);
-  // Serial.print("Aux ");
   // Serial.println(aux);
-  // Serial.print("Aux2 ");
-  // Serial.println(aux2);
 
   switch(cmdid) {
     case 0:  sm(pin,val);              break;
@@ -82,7 +68,7 @@ void process() {
     case 2:  dr(pin,val);              break;
     case 3:  aw(pin,val);              break;
     case 4:  ar(pin,val);              break;
-    case 96: handleRCTriState(pin, val, aux, aux2); break;
+    case 96: handleRCTriState(pin, val); break;
     case 97: handlePing(pin,val,aux);  break;
     case 98: handleServo(pin,val,aux); break;
     case 99: toggleDebug(val);         break;
@@ -268,14 +254,11 @@ void handleServo(char *pin, char *val, char *aux) {
  * Handle RC commands
  * handleRCTriState("10", "0FFF0FFFFF0F")
  */
-void handleRCTriState(char *pin, char *val, char *aux, char *aux2) {
+void handleRCTriState(char *pin, char *val) {
   int p = getPin(pin);
   if(p == -1) { if(debug) Serial.println("badpin"); return; }
-  
   if (debug) Serial.println("RC");
   RCSwitch rc = RCSwitch();
-  //rc.setPulseLength(194);
-  rc.setProtocol(atoi(aux), atoi(aux2));
   rc.enableTransmit(p);
   rc.sendTriState(val);
 }
